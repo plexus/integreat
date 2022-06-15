@@ -16,16 +16,19 @@
 (defmethod aero/reader 'setting [_ _ k] (->Setting k))
 (defmethod aero/reader 'secret [_ _ k] (->Secret k))
 
+(defn env-munge [s]
+  (str/upper-case (str/replace (munge s) #"\." "_")))
+
 (defn key->env-var [k]
   (if (string? k)
     k
     (str (when (qualified-ident? k)
-           (str (str/upper-case (munge (namespace k)))
+           (str (env-munge (namespace k))
                 "__"))
-         (str/upper-case (munge (name k))))))
+         (env-munge (name k)))))
 
 (comment
-  (key->env-var :foo-bar/baz-baq)
+  (key->env-var :foo.bar/baz-baq)
   ;; => "FOO_BAR__BAZ_BAQ"
   (key->env-var :baz-baq)
   ;; => "BAZ_BAQ"
@@ -34,7 +37,19 @@
 (defn env [k]
   (System/getenv (key->env-var k)))
 
-(defn env-read [k]
+(defn env-edn [k]
+  (if-let [v (env k)]
+    (try
+      (edn/read-string v)
+      (catch Exception _
+        v))))
+
+(defn properties [k]
+  (System/getProperty (if (string? k)
+                        k
+                        (subs (str k) 1))))
+
+(defn properties-edn [k]
   (if-let [v (env k)]
     (try
       (edn/read-string v)

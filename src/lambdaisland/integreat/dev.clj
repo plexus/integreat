@@ -6,6 +6,24 @@
 
 (repl/disable-reload! (find-ns 'integrant.core))
 
+(defn setting
+  ([setup k]
+   (setting k nil))
+  ([setup k aero-opts]
+   ((igreat/build-config-provider
+     (:settings setup)
+     (merge {:profile :dev} aero-opts))
+    k)))
+
+(defn secret
+  ([setup k]
+   (setting k nil))
+  ([setup k aero-opts]
+   ((igreat/build-config-provider
+     (:secrets setup)
+     (merge {:profile :dev} aero-opts))
+    k)))
+
 (defn prep [setup aero-opts]
   (alter-var-root #'state/setup (constantly setup))
   (alter-var-root #'state/aero-opts (constantly aero-opts))

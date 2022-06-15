@@ -9,8 +9,6 @@
    (let [config  (igreat/read-system-config setup (merge {:profile :prod} aero-opts))
          system  (ig/init config (:keys setup (keys config)))
          runtime (java.lang.Runtime/getRuntime)]
-     (prn config)
-     (prn system)
      (.addShutdownHook
       runtime
       (Thread. (fn []
