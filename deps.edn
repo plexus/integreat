@@ -1,0 +1,16 @@
+{:paths ["src" "resources"]
+
+ :deps
+ {integrant/integrant             {:mvn/version "0.8.0"}
+  aero/aero                       {:mvn/version "1.1.6"}
+  org.clojure/tools.namespace     {:mvn/version "1.0.0"}
+  io.github.cdimascio/dotenv-java {:mvn/version "2.2.4"}}
+
+ :aliases
+ {:dev
+  {:extra-paths ["dev"]
+   :extra-deps  {djblue/portal {:mvn/version "RELEASE"}}}
+
+  :test
+  {:extra-paths ["test"]
+   :extra-deps  {lambdaisland/kaocha {:mvn/version "1.66.1034"}}}}}
